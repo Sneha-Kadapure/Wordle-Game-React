@@ -1,0 +1,102 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+}
+
+.cell {
+    background: #456882;
+    height: 100px;
+    width: 100px;
+    border-radius: 5px;
+    color: white;
+    font-size: 85px;
+    text-align: center;
+    font-family: serif;
+}
+
+.keys {
+    background: #1B3C53;
+    height: 100px;
+    width: 100px;
+    border-radius: 5px;
+    color: white;
+    font-size: 85px;
+    text-align: center;
+    font-family: serif;
+}
+
+button {
+    background: #5C5470;
+    height: 100px;
+    width: 250px;
+    border-radius: 15px;
+    color: white;
+    font-size: 85px;
+    text-align: center;
+    font-family: serif;
+    margin-left: 400px;
+}
+
+.wordContainer {
+    display: grid;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(6, 100px);
+    height: 600px;
+    width: 500px;
+    gap: 4px;
+    margin-bottom: 50px;
+    margin-left: 50px;
+}
+
+.firstKeyboard {
+    display: grid;
+    grid-template-columns: repeat(10, 100px);
+    height: 100px;
+    width: 1000px;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.secondKeyboard {
+    display: grid;
+    grid-template-columns: repeat(9, 100px);
+    height: 100px;
+    width: 900px;
+    gap: 4px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.thirdKeyboard {
+    display: grid;
+    grid-template-columns: repeat(7, 100px);
+    height: 100px;
+    width: 700px;
+    gap: 4px;
+    margin-bottom: 10px;
+    margin-left: 60px;
+}
+
+body {
+    background-color: gainsboro;
+}
+
+h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 90px;
+    margin-left: 70px;
+}
+
+.green{
+    background-color: #78C841;
+}
+
+.yellow{
+    background-color: #FCF259;
+}
+
+.gray{
+    background-color: gray;
+}
+
