@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../App.css";
 
 const words = [
@@ -28,24 +28,26 @@ function Game() {
   const [message, setMessage] = useState("Wordle Game");
   const [keyColors, setKeyColors] = useState({});
 
-  const handleKey = (letter) => {
-    if (col < 5 && row < 6) {
-      const newGrid = [...grid];
-      newGrid[row][col].letter = letter;
+  // ✅ HANDLE KEY PRESS
+  const handleKey = useCallback((letter) => {
+    if (col >= 5 || row >= 6) return;
 
-      setGrid(newGrid);
-      setCol(col + 1);
-      setCurrentWord(currentWord + letter);
-    }
-  };
+    const newGrid = grid.map((r) => r.map((c) => ({ ...c })));
+    newGrid[row][col].letter = letter;
 
-  const handleEnter = () => {
+    setGrid(newGrid);
+    setCol(col + 1);
+    setCurrentWord(currentWord + letter);
+  }, [col, row, grid, currentWord]);
+
+  // ✅ HANDLE ENTER
+  const handleEnter = useCallback(() => {
     if (col !== 5) return;
 
-    const newGrid = [...grid];
+    const newGrid = grid.map((r) => r.map((c) => ({ ...c })));
     let newKeyColors = { ...keyColors };
 
-    // ✅ WIN CONDITION
+    // WIN
     if (currentWord === randomWord) {
       for (let j = 0; j < 5; j++) {
         newGrid[row][j].color = "green";
@@ -56,13 +58,13 @@ function Game() {
       return;
     }
 
-    // ✅ STEP 1: Count letters in word
+    // Count letters
     const letterCount = {};
     for (let char of randomWord) {
       letterCount[char] = (letterCount[char] || 0) + 1;
     }
 
-    // ✅ STEP 2: Mark GREEN first
+    // GREEN first
     for (let j = 0; j < 5; j++) {
       const letter = currentWord[j];
       if (letter === randomWord[j]) {
@@ -72,7 +74,7 @@ function Game() {
       }
     }
 
-    // ✅ STEP 3: Mark YELLOW / GRAY
+    // YELLOW / GRAY
     for (let j = 0; j < 5; j++) {
       const letter = currentWord[j];
 
@@ -97,34 +99,30 @@ function Game() {
     setGrid(newGrid);
     setKeyColors(newKeyColors);
 
+    // ✅ MOVE STATE UPDATES OUTSIDE
     if (row === 5) {
       setMessage("You Lose ☹️☹️");
       setTimeout(() => window.location.reload(), 4500);
-      return;
+    } else {
+      setRow(row + 1);
+      setCol(0);
+      setCurrentWord("");
     }
+  }, [col, currentWord, randomWord, row, grid, keyColors]);
 
-    setRow(row + 1);
-    setCol(0);
-    setCurrentWord("");
-  };
+  // ✅ HANDLE BACKSPACE
+  const handleBackspace = useCallback(() => {
+    if (col === 0) return;
 
-  const handleBackspace = () => {
-    if (col > 0) {
-      const newGrid = [...grid];
-      newGrid[row][col - 1].letter = "";
+    const newGrid = grid.map((r) => r.map((c) => ({ ...c })));
+    newGrid[row][col - 1].letter = "";
 
-      setGrid(newGrid);
-      setCol(col - 1);
-      setCurrentWord(currentWord.slice(0, -1));
-    }
-  };
+    setGrid(newGrid);
+    setCol(col - 1);
+    setCurrentWord(currentWord.slice(0, -1));
+  }, [col, row, grid, currentWord]);
 
-  const keyboard = [
-    ["Q","W","E","R","T","Y","U","I","O","P"],
-    ["A","S","D","F","G","H","J","K","L"],
-    ["Z","X","C","V","B","N","M"],
-  ];
-
+  // ✅ KEYBOARD LISTENER
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Enter") handleEnter();
@@ -136,13 +134,19 @@ function Game() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [col, row, currentWord, grid]);
+  }, [handleEnter, handleBackspace, handleKey]);
+
+  const keyboard = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L"],
+    ["Z","X","C","V","B","N","M"],
+  ];
 
   return (
     <div className="mainContainer">
       <h1>{message}</h1>
 
-      {/* Grid */}
+      {/* GRID */}
       <div className="wordContainer">
         {grid.map((r, i) =>
           r.map((cell, j) => (
@@ -153,7 +157,7 @@ function Game() {
         )}
       </div>
 
-      {/* Keyboard */}
+      {/* KEYBOARD */}
       {keyboard.map((rowKeys, i) => (
         <div
           key={i}
