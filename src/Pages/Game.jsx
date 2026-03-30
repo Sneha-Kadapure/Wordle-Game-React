@@ -16,8 +16,6 @@ function Game() {
     []
   );
 
-  console.log(randomWord);
-
   const [grid, setGrid] = useState(
     Array.from({ length: 6 }, () =>
       Array.from({ length: 5 }, () => ({ letter: "", color: "" }))
